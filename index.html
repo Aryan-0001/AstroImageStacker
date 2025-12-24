@@ -6,50 +6,48 @@
 <title>Astro Stack</title>
 
 <style>
-:root {
+:root{
   --bg:#0b1020;
   --panel:#111a33;
   --text:#e8ecff;
 }
+*{box-sizing:border-box}
 
-* { box-sizing: border-box; }
-
-body {
+body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: radial-gradient(1200px 600px at 30% 10%, #16224a 0%, var(--bg) 60%);
-  color: var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:radial-gradient(1200px 600px at 30% 10%,#16224a 0%,var(--bg) 60%);
+  color:var(--text);
   height:100vh;
   overflow:hidden;
 }
 
-header {
+header{
   padding:12px 16px;
   border-bottom:1px solid rgba(255,255,255,.08);
   background:rgba(8,12,26,.6);
 }
-
-header h1 {
+header h1{
   margin:0;
   font-size:14px;
   letter-spacing:.6px;
   text-transform:uppercase;
 }
 
-.wrap {
+.wrap{
   display:grid;
   grid-template-columns:320px 1fr;
   height:calc(100vh - 44px);
 }
 
-.panel {
+.panel{
   background:linear-gradient(180deg,#111a33,#0c1223);
   border-right:1px solid rgba(255,255,255,.08);
   padding:14px;
   overflow:auto;
 }
 
-.block {
+.block{
   background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.08);
   border-radius:12px;
@@ -57,13 +55,13 @@ header h1 {
   margin-bottom:12px;
 }
 
-.row {
+.row{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
 }
 
-.btn {
+.btn{
   background:rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.2);
   color:var(--text);
@@ -73,36 +71,28 @@ header h1 {
   font-weight:600;
   font-size:12px;
 }
-
-.btn.primary {
+.btn.primary{
   background:rgba(106,169,255,.18);
   border-color:rgba(106,169,255,.6);
 }
 
 input[type=file]{display:none}
+label{font-size:11px;opacity:.8}
+input[type=range]{width:100%}
 
-label {
-  font-size:11px;
-  opacity:.8;
-}
-
-input[type=range] {
-  width:100%;
-}
-
-.stage {
+.stage{
   position:relative;
   background:#000;
 }
 
-canvas {
+canvas{
   position:absolute;
   inset:0;
   width:100%;
   height:100%;
 }
 
-.hud {
+.hud{
   position:absolute;
   left:12px;
   bottom:12px;
@@ -112,12 +102,12 @@ canvas {
   font-size:12px;
 }
 
-@media (max-width:900px) {
-  .wrap {
+@media(max-width:900px){
+  .wrap{
     grid-template-columns:1fr;
     grid-template-rows:1fr auto;
   }
-  .panel {
+  .panel{
     max-height:45vh;
     border-right:none;
     border-top:1px solid rgba(255,255,255,.1);
@@ -132,33 +122,33 @@ canvas {
 </header>
 
 <div class="wrap">
-  <aside class="panel">
+<aside class="panel">
 
-    <div class="block">
-      <div class="row">
-        <label class="btn primary" for="fileInput">Load Images</label>
-        <input id="fileInput" type="file" multiple accept="image/*">
-        <button class="btn" id="exportBtn">Export PNG</button>
-      </div>
-    </div>
+<div class="block">
+  <div class="row">
+    <label class="btn primary" for="fileInput">Load Images</label>
+    <input id="fileInput" type="file" multiple accept="image/*">
+    <button class="btn" id="exportBtn">Export PNG</button>
+  </div>
+</div>
 
-    <div class="block">
-      <label>Gamma Stretch</label>
-      <input type="range" id="gamma" min="0.4" max="1.2" step="0.01" value="0.75">
+<div class="block">
+  <label>Gamma Stretch</label>
+  <input type="range" id="gamma" min="0.4" max="1.2" step="0.01" value="0.75">
 
-      <label style="margin-top:8px;display:block;">Background Extraction</label>
-      <input type="range" id="bg" min="0" max="1" step="0.01" value="0.45">
+  <label style="margin-top:8px;display:block;">Background Extraction</label>
+  <input type="range" id="bg" min="0" max="1" step="0.01" value="0.45">
 
-      <label style="margin-top:8px;display:block;">Noise Reduction</label>
-      <input type="range" id="nr" min="0" max="1" step="0.01" value="0.3">
-    </div>
+  <label style="margin-top:8px;display:block;">Noise Reduction</label>
+  <input type="range" id="nr" min="0" max="1" step="0.01" value="0.3">
+</div>
 
-  </aside>
+</aside>
 
-  <main class="stage" id="stage">
-    <canvas id="c"></canvas>
-    <div class="hud" id="hud">No images loaded</div>
-  </main>
+<main class="stage" id="stage">
+  <canvas id="c"></canvas>
+  <div class="hud" id="hud">No images loaded</div>
+</main>
 </div>
 
 <script>
@@ -168,43 +158,42 @@ const stage = document.getElementById("stage");
 const fileInput = document.getElementById("fileInput");
 const hud = document.getElementById("hud");
 
-let images = [];
-let W = 0, H = 0;
+let images=[];
+let W=0,H=0;
 
-const astro = {
-  gamma: 0.75,
-  bg: 0.45,
-  nr: 0.3
-};
+const astro={gamma:0.75,bg:0.45,nr:0.3};
 
 function resize(){
   if(!W||!H) return;
-  const dpr = devicePixelRatio || 1;
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
+  const dpr=devicePixelRatio||1;
+  canvas.width=W*dpr;
+  canvas.height=H*dpr;
+  canvas.style.width="100%";
+  canvas.style.height="100%";
   ctx.setTransform(dpr,0,0,dpr,0,0);
   render();
 }
-window.addEventListener("resize", resize);
+window.addEventListener("resize",resize);
 
-fileInput.onchange = async e => {
-  images = [];
+fileInput.onchange=async e=>{
+  images=[];
   for(const f of e.target.files){
-    const img = new Image();
-    img.src = URL.createObjectURL(f);
+    const img=new Image();
+    img.src=URL.createObjectURL(f);
     await img.decode();
     images.push(img);
   }
   if(!images.length) return;
-  W = images[0].naturalWidth;
-  H = images[0].naturalHeight;
+  W=images[0].naturalWidth;
+  H=images[0].naturalHeight;
   resize();
-  hud.textContent = `${images.length} images stacked`;
+  render();
+  hud.textContent=`${images.length} images stacked`;
 };
 
 ["gamma","bg","nr"].forEach(id=>{
-  document.getElementById(id).oninput = e=>{
-    astro[id] = +e.target.value;
+  document.getElementById(id).oninput=e=>{
+    astro[id]=+e.target.value;
     render();
   };
 });
@@ -212,13 +201,16 @@ fileInput.onchange = async e => {
 function render(){
   if(!images.length) return;
 
-  const stack = ctx.createImageData(W,H);
-  const acc = new Float32Array(stack.data.length);
+  ctx.setTransform(devicePixelRatio||1,0,0,devicePixelRatio||1,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const stack=ctx.createImageData(W,H);
+  const acc=new Float32Array(stack.data.length);
 
   images.forEach(img=>{
     ctx.clearRect(0,0,W,H);
     ctx.drawImage(img,0,0);
-    const d = ctx.getImageData(0,0,W,H).data;
+    const d=ctx.getImageData(0,0,W,H).data;
     for(let i=0;i<d.length;i++) acc[i]+=d[i];
   });
 
@@ -226,13 +218,13 @@ function render(){
     stack.data[i]=acc[i]/images.length;
   }
 
-  // Background extraction
+  // background extraction
   let samples=[];
   for(let i=0;i<stack.data.length;i+=16){
     samples.push((stack.data[i]+stack.data[i+1]+stack.data[i+2])/3);
   }
   samples.sort((a,b)=>a-b);
-  const bg = samples[Math.floor(samples.length/2)] * astro.bg;
+  const bg=samples[Math.floor(samples.length/2)]*astro.bg;
 
   for(let i=0;i<stack.data.length;i+=4){
     stack.data[i]=Math.max(0,stack.data[i]-bg);
@@ -244,7 +236,7 @@ function render(){
     stack.data[i+2]=255*Math.pow(stack.data[i+2]/255,astro.gamma);
   }
 
-  // Noise reduction
+  // noise reduction
   if(astro.nr>0){
     const copy=new Uint8ClampedArray(stack.data);
     const r=1+Math.floor(astro.nr*2);
